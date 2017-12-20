@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+
+  ansible:
+    container_name: rpi-installer
+    image: williamyeh/ansible:alpine3
+    ports:
+      - 22
+    volumes:
+      - ./:/tmp
+    environment:
+#      REQUIREMENTS: requirements.yml
+      PLAYBOOK: /tmp/playbook.yml
+      INVENTORY: /tmp/hosts
+      USERNAME: ${username}
+      PASSWORD: ${password}
+      HOST: ${host}
+      PORT: ${port}
+      USER: ${user}
+    command: /tmp/ansible-playbook-wrapper
+
+  test:
+    container_name: rpi-test-image
+    image: resin/rpi-raspbian
+    ports:
+      - 22:22
+    volumes:
+      - ${sshKeyPath}:/root/.ssh/id_rsa
+    tty: true
+    stdin_open: true

@@ -1,0 +1,17 @@
+---
+- hosts: all
+  vars:
+    username: "{{ lookup('env', 'USERNAME') }}"
+    password: "{{ lookup('env', 'PASSWORD') }}"
+  tasks:
+    - import_tasks: tasks/update.yml
+      tags: setup
+
+    - include_tasks: tasks/users.yml
+      tags: setup
+
+    - import_tasks: tasks/app.yml
+      tags: install_app
+
+    - import_tasks: tasks/reboot.yml
+      tags: install_app

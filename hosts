@@ -1,0 +1,1 @@
+rpi ansible_port="{{ lookup('env', 'PORT') }}" ansible_host="{{ lookup('env', 'HOST') }}" ansible_user="{{ lookup('env', 'USER') }}"

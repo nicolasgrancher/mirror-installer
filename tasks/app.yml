@@ -1,0 +1,43 @@
+- name: Clone repo
+  git:
+    repo: 'https://github.com/nicolasgrancher/mirror.git'
+    dest: /var/www/
+    version: release-0.22
+
+- name: Add host entry
+  lineinfile:
+    dest: /etc/hosts
+    state: present
+    insertafter: "EOF"
+    line: "127.0.0.1	mirror"
+
+- name: Install nginx
+  apt:
+    name: "nginx"
+    state: present
+
+- name: Remove default nginx vhost config file (if configured).
+  file:
+    path: "/etc/nginx/sites-available/default"
+    state: absent
+
+- name: Install vhost
+  template:
+    src: /tmp/templates/mirror.vhost
+    dest: /etc/nginx/sites-enabled/mirror
+  notify: restart nginx
+
+- name: Install Chromium
+  apt:
+    name: "chromium"
+    state: present
+
+- name: Setup kiosk mode
+  blockinfile:
+    path: "~/.config/lxsession/LXDE-pi/autostart"
+    block: |
+      @point-rpi
+      @xset s off
+      @xset -dpms
+      @xset s noblank
+      @chromium-browser –kiosk http://mirror

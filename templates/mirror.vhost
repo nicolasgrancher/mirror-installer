@@ -1,0 +1,13 @@
+server {
+    listen 80;
+
+    root /var/www/mirror;
+
+    index index.html;
+
+    server_name mirror;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}

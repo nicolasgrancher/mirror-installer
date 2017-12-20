@@ -1,0 +1,25 @@
+- name: Add non-root user
+  user:
+    name: "{{ username }}"
+    password: "{{ password }}"
+    shell: /bin/bash
+    update_password: on_create
+    state: present
+
+- name: Remove default user "pi"
+  user:
+    name: pi
+    state: absent
+    remove: yes
+
+- name: Disable root login
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
+    state: present
+
+- name: Restart ssh service
+  service:
+    name: ssh
+    state: restarted
